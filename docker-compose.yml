@@ -26,6 +26,7 @@ services:
     container_name: cjoc
     #https://hub.docker.com/r/cloudbees/jenkins-operations-center/
     image: cloudbees/jenkins-operations-center:2.138.1.2
+    tmpfs: /tmp
     environment:
       JENKINS_SLAVE_AGENT_PORT: "50000"
       JENKINS_HA: "false"
@@ -37,7 +38,7 @@ services:
         -Dhudson.DNSMultiCast.disabled=true
         -Djava.awt.headless=true
         -Dorg.apache.commons.jelly.tags.fmt.timeZone=America/New_York"
-      JENKINS_OPTS: "--prefix=/cjoc"
+      JENKINS_OPTS: "--prefix=/cjoc  --pluginroot=/tmp/pluginRoot --webroot=/tmp/warRoot"
     volumes:
       - ./data/cjoc:/var/jenkins_home
       - ./data/backups:/backups
@@ -46,6 +47,7 @@ services:
     container_name: cje-prod
     #https://hub.docker.com/r/cloudbees/jenkins-enterprise/
     image: cloudbees/jenkins-enterprise:2.138.1.2
+    tmpfs: /tmp
     environment:
       JENKINS_SLAVE_AGENT_PORT: "50000"
       JENKINS_HA: "false"
@@ -57,7 +59,7 @@ services:
         -Djava.awt.headless=true
         -Dorg.apache.commons.jelly.tags.fmt.timeZone=America/New_York
         "
-      JENKINS_OPTS: "--prefix=/cje-prod"
+      JENKINS_OPTS: "--prefix=/cje-prod --pluginroot=/tmp/pluginRoot --webroot=/tmp/warRoot"
     volumes:
       - ./data/cje-prod:/var/jenkins_home
       - ./data/backups:/backups
@@ -69,6 +71,7 @@ services:
     build:
       context: ./docker/
       dockerfile: Dockerfile.cje-test #based on the same image as cje-prod
+    tmpfs: /tmp
     environment:
       JENKINS_SLAVE_AGENT_PORT: "50000"
       JENKINS_HA: "false"
@@ -80,7 +83,7 @@ services:
         -Djava.awt.headless=true
         -Dorg.apache.commons.jelly.tags.fmt.timeZone=America/New_York
         "
-      JENKINS_OPTS: "--prefix=/cje-test"
+      JENKINS_OPTS: "--prefix=/cje-test --pluginroot=/tmp/pluginRoot --webroot=/tmp/warRoot"
     volumes:
       - ./data/cje-test:/var/jenkins_home
       - ./data/backups:/backups
